@@ -15,7 +15,6 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     println!("Hello user!");
     println!("You can type help to get the list of commands");
 
-
     #[cfg(test)]
     test_main();
 

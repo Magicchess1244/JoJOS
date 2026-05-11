@@ -75,6 +75,7 @@ pub fn init(boot_info: &'static BootInfo) {
     unsafe { interrupts::PICS.lock().initialize() };
     x86_64::instructions::interrupts::enable();
     allocator::alloc_init(boot_info);
+    vga_buffer::disable_cursor();
 }
 
 pub fn hlt_loop() -> ! {

@@ -30,6 +30,13 @@ macro_rules! backspace {
     };
 }
 
+#[macro_export]
+macro_rules! clear_screen {
+    () => {
+        $crate::vga_buffer::WRITER.lock().clear_screen()
+    };
+}
+
 #[doc(hidden)]
 pub fn _print(args: fmt::Arguments) {
     use core::fmt::Write;
@@ -136,6 +143,11 @@ impl Writer {
         };
         for col in 0..BUFFER_WIDTH {
             self.buffer.chars[row][col].write(blank);
+        }
+    }
+    pub fn clear_screen(&mut self){
+        for row in 0..=BUFFER_HEIGHT - 1 {
+            self.clear_row(row);
         }
     }
     pub fn write_string(&mut self, s: &str) {
@@ -248,4 +260,18 @@ fn test_println_output() {
             assert_eq!(char::from(screen_char.ascii_character), c);
         }
     });
+}
+
+use x86_64::instructions::port::Port;
+
+pub fn disable_cursor() {
+    let mut index_register = Port::new(0x3D4);
+    let mut data_register = Port::new(0x3D5);
+
+    unsafe {
+        index_register.write(0x0Au8);
+        
+        let current_start: u8 = data_register.read();
+        data_register.write(current_start | 0x20);
+    }
 }

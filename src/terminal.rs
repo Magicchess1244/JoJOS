@@ -1,6 +1,7 @@
 use crate::println;
 use crate::print;
 use crate::get_words;
+use crate::clear_screen;
 
 use alloc::{vec::Vec, string::String};
 
@@ -10,7 +11,7 @@ struct Command {
     description: &'static str,
 }
 
-static COMMANDS: [Command; 2] = [
+static COMMANDS: [Command; 3] = [
     Command {
         name: "echo",
         function: echo,
@@ -20,6 +21,11 @@ static COMMANDS: [Command; 2] = [
         name: "help",
         function: help,
         description: "It tells you the name of the commands and a short description"
+    },
+    Command {
+        name: "clear",
+        function: clear,
+        description: "It clears the screen"
     },
 ];
 
@@ -46,10 +52,13 @@ fn echo(cmd: Vec<String>) {
     println!();
 }
 
-fn help(cmd : Vec<String>) {
+fn help(_cmd : Vec<String>) {
     println!();
     for command in COMMANDS.iter() {
         print!("{}: ", command.name);
         println!("{}", command.description);
     }
+}
+fn clear(_cmd: Vec<String>) {
+    clear_screen!();
 }
